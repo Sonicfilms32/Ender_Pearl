@@ -1,0 +1,100 @@
+local R = require("robot")
+local component = require("component")
+local sides = require("sides")
+
+function placeSlice(times)
+  for i=2,times,1
+  do
+    R.placeDown()
+    R.placeUp()
+    R.forward()
+    R.turnAround()
+    R.place()
+    R.turnAround()
+  end
+end
+function placeCore(times)
+  for i=2,times,1
+  do
+    R.placeDown()
+    R.up()
+    R.select(2)
+    R.placeDown()
+    R.up()
+    R.select(1)
+    R.placeDown()
+  end
+end
+
+function determinetime()
+  if R.compareTo(5) then
+    t = 13
+  end
+  \\checks if there is a compact machine wall to know if it is making a compact machine
+  if R.compareTo(6) then
+    t = 0
+  end
+  \\checks if there is obsideon to know to build enderpearl
+end
+
+function build(times)
+  for i=2,times,1
+  do
+    R.select(1)
+    R.suckDown(26)
+    \\gets shell blocks
+
+    R.turnRight()
+    R.suck(1)
+    \\gets core block
+
+    R.turnAround()
+    R.suck(1)
+    \\gets catalyst item
+    R.turnRight()
+    determinetime()
+    \\checks what it is making so that it can start the next craft as soon as possible
+    R.back()
+    R.back()
+    R.back()
+    R.turnRight()
+    R.forward()
+    R.select(1)
+    placeSlice(3)
+    R.turnRight()
+    placeSlice(3)
+    R.turnRight()
+    placeSlice(3)
+    R.turnRight()
+    placeSlice(2)
+    R.turnRight()
+    placeSlice(2)
+    placeCore(2)
+  end
+end
+function Go()
+  build(2)
+  R.up()
+  R.select(3)
+  R.drop()
+end
+
+while (true)
+do
+  if (component.redstone.getInput(sides.front) > 0)
+  \\if there isn't a redstone signal, it will wait and not move
+  then
+    Go()
+    R.back()
+    R.back()
+    R.turnLeft()
+    R.forward()
+    R.forward()
+    R.forward()
+    R.down()
+    R.down()
+    R.down()
+    R.forward()
+    os.sleep(t)
+  end
+end
